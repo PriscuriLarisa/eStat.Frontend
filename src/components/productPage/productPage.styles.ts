@@ -1,4 +1,4 @@
-import { IButtonStyles, LabelBase, mergeStyles } from "office-ui-fabric-react";
+import { IButtonStyles, ISpinButton, ISpinButtonStyles, LabelBase, mergeStyles } from "office-ui-fabric-react";
 import { BORDER_COLOR, FONT_FAMILY } from "../../library/constants";
 import { IDetailsListStyles, ILabelStyles } from "@fluentui/react";
 
@@ -248,3 +248,85 @@ export const secondaryContainer: string = mergeStyles({
     width: '38.5%',
     height: '100%',
 });
+
+export const calloutTitleClassname: string = mergeStyles({
+    fontFamily: FONT_FAMILY,
+    fontSize: '16px',
+    margin: '5%',
+});
+
+export const calloutBodyContainerClassname: string = mergeStyles({
+    margin: '10%',
+    marginBottom: '0px'
+});
+
+export const calloutContainerClassname: string  = mergeStyles({
+    minHeight: '200px',
+    maxWidth: '350px',
+    textAlign: 'center'
+});
+
+export const quantitySpinButtonClassname: string  = mergeStyles({
+    maxWidth: '30%',
+});
+
+export const quantitySpinButtonStyles: Partial<ISpinButtonStyles> = {
+    root: {
+        maxWidth: '100%',
+        border: 'none',
+        fontFamily: FONT_FAMILY,
+        fontSize: '20px'
+    },
+    label: {
+        fontFamily: FONT_FAMILY,
+        fontWeight: '100',
+    },
+    labelWrapper: {
+        minWidth: '40%',
+        marginLeft: '10%'
+    },
+    spinButtonWrapper: {
+        maxWidth: '20%',
+        border: 'none',
+        margin: 'auto',
+        selectors: {
+            "::after": {
+                border: 'none',
+                borderBottom: `1px solid #7d7d7d`
+            }
+        }
+    },
+    input: {
+        fontSize: '16px',
+        color: "#4B56D2",
+        fontWeight: '600'
+    }
+};
+
+export const addToCartCalloutButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        margin: '5%',
+        marginLeft: '60%',
+        border: 'none',
+        fontFamily: FONT_FAMILY,
+        color: "#4B56D2",
+        padding: 'none'
+    },
+    rootHovered: {
+        fontFamily: FONT_FAMILY,
+        color: "#4B56D2",
+        fontSize: '16px',
+        background: 'transparent',
+        selectors: {
+            '.ms-Button-label': {
+                textDecoration: 'underline'
+            }
+        }
+    },
+    label: {
+        fontFamily: FONT_FAMILY,
+        color: "#4B56D2",
+        fontSize: '16px'
+    }
+    
+};

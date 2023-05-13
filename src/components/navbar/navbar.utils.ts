@@ -22,7 +22,12 @@ const processCategories = (categories: string[], onClick:(category: string) => v
   });
 }
 
-export const getNavbar = (expanded: boolean, categories: string[], onCategoryClicked: (category: string) => void, onSearchClicked: () => void): INavLinkGroup[] => {
+export const getNavbar = (expanded: boolean, categories: string[],  onCategoryClicked: (category: string) => void, 
+                                                                    onSearchClicked: () => void, 
+                                                                    onMyCartClicked: () => void,
+                                                                    onMyStockClicked: () => void,
+                                                                    onMembershipsClicked: () => void,
+                                                                    onProfileClicked: () => void): INavLinkGroup[] => {
   return [
     {
       name: 'Shop',
@@ -45,7 +50,7 @@ export const getNavbar = (expanded: boolean, categories: string[], onCategoryCli
         {
           name: 'My Cart',
           isExpanded: false,
-          onClick: (() => { }),
+          onClick: (() => {onMyCartClicked()}),
           iconProps: cartIconProps,
           url: ''
         },
@@ -71,7 +76,7 @@ export const getNavbar = (expanded: boolean, categories: string[], onCategoryCli
         {
           name: 'My Stock',
           isExpanded: false,
-          onClick: (() => { }),
+          onClick: (() => {onMyStockClicked()}),
           iconProps: stockIconProps,
           url: ''
         },
@@ -83,14 +88,14 @@ export const getNavbar = (expanded: boolean, categories: string[], onCategoryCli
         {
           name: 'Profile',
           isExpanded: false,
-          onClick: (() => { }),
+          onClick: (() => {onProfileClicked()}),
           iconProps: profileIconProps,
           url: ''
         },
         {
           name: 'Memberships',
           isExpanded: false,
-          onClick: (() => { }),
+          onClick: (() => {onMembershipsClicked()}),
           iconProps: medalIconProps,
           url: ''
         },

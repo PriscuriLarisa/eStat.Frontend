@@ -22,7 +22,7 @@ export const loginContainerClassName: string = mergeStyles({
 
 export const registerContainerClassName: string = mergeStyles({
     backgroundColor: PRIMARY_COLOR_YELLOW,
-    backgroundImage: `linear-gradient(to bottom right, ${PRIMARY_COLOR_YELLOW}, ${PRIMARY_COLOR_BLUE})`,
+    backgroundImage: `linear-gradient(300deg, rgba(71,33,131,1) 0%, rgba(134,105,180,1) 37%, rgba(111,120,212,1) 64%, rgba(75,86,210,1) 100%)`,
     height: '100%',
     width: "30%",
     margin: "auto",
@@ -35,7 +35,7 @@ export const backgroundImageClassName: string = mergeStyles({
     height: '90%',
     top: '35%',
     position: 'absolute',
-    opacity: 0.85,
+    opacity: 0.6,
     zIndex: -8
 });
 
@@ -47,6 +47,13 @@ export const logoImageClassName: string = mergeStyles({
     position: 'absolute',
     opacity: 0.8,
     zIndex: -8
+});
+
+export const errorClassName: string = mergeStyles({
+    color: 'red',
+    fontFamily: FONT_FAMILY,
+    position: "relative",
+    left: '22.5%'
 });
 
 export const titleClassName: string = mergeStyles({
@@ -93,7 +100,15 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
                 fontFamily: FONT_FAMILY,
                 fontWeight: "100",
                 fontSize: "16px",
-            }
+            },
+            "::after": {
+                border: 'none',
+                borderBottom: `2px solid #4B56D2`
+            },
+            ":hover": {
+                border: 'none',
+                borderBottom: `2px solid #4B56D2`
+            },
         }
     }
 };
@@ -107,16 +122,16 @@ export const loginButtonStyle: Partial<IButtonStyles> = {
         position: "relative",
         left: "30%",
         top: "10%",
-        borderRadius: "12px",
+        borderRadius: "4px",
         border: "0px",
-        backgroundColor: PRIMARY_COLOR_BLUE,
+        backgroundColor: '#4B56D2',
         fontSize: "16px",
         padding: "15px",
         boxShadow: "0px 8px 8px -4px rgb(0 0 0 / 0.2)"
     },
     rootHovered: {
-        backgroundColor: "#256D85",
-        color: PRIMARY_COLOR_YELLOW,
+        backgroundColor: "#472183",
+        color: '#fdfdfd',
     }
 };
 
@@ -147,7 +162,7 @@ export const registerButtonStyle: Partial<IButtonStyles> = {
         position: "absolute",
         top: "50%",
         left: "34%",
-        borderRadius: "12px",
+        borderRadius: "4px",
         border: "0px",
         backgroundColor: BACKGROUND_COLOR,
         fontSize: "25px",
@@ -157,7 +172,7 @@ export const registerButtonStyle: Partial<IButtonStyles> = {
         boxShadow: "0px 8px 8px -4px rgb(0 0 0 / 0.2)"
     },
     rootHovered: {
-        backgroundColor: PRIMARY_COLOR_BLUE,
+        backgroundColor: '#472183',
         color: BACKGROUND_COLOR,
     }
 };

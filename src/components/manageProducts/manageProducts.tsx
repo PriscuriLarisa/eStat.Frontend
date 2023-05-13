@@ -33,7 +33,7 @@ export const ManageProducts = (): JSX.Element => {
 
     return (
         <div className={mainContainerClassname}>
-            <TitleCard title="Products" />
+            <TitleCard title={category!} />
             {productsInPage && <div className={contentContainerClassname}>
                 {loading && <Label>Loading..</Label> }
                 {!loading && productsInPage}

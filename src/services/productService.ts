@@ -22,6 +22,7 @@ export default class ProductsService extends BaseService<Product>  {
     }
 
     async GetNumberOfProductsBySearch(keywords: string): Promise<IResponse<number>> {
+        keywords = keywords !== "" ? keywords : 'customSearchTag';
         return APIHelper.request(`${this._endpoint}/search/${keywords}`, 'GET');
     }
 }

@@ -6,6 +6,7 @@ import { PanelType } from "office-ui-fabric-react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { PRODUCT_PAGE_PATH } from "../../library/constants";
 import { getFormattedJSON } from "../../helpers/stringFormatHelper";
+import { ConfirmationMessageBar } from "../confirmationMessageBar/confirmationMessageBar";
 
 const infoIconProps: IIconProps = { iconName: "Info" };
 

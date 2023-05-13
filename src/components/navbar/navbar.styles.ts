@@ -15,9 +15,6 @@ export const navStyles: Partial<INavStyles> = {
         backgroundColor: '#fdfdfd',
         zIndex: '10',
         selectors: {
-            ".ms-FocusZone": {
-                backgroundColor: 'red'
-            },
             ':hover': {
                 width: '13vw',
                 transition: '0.5s',

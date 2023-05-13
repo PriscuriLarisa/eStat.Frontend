@@ -2,9 +2,9 @@ import { Roles} from "../enums/roles";
 import {  Memberships } from "../enums/memberships";
 
 export interface UserInfo {
-    userGUID?: string,
+    userGUID: string,
     firstName: string,
-    lastName: boolean,
+    lastName: string,
     email: string,
     role?: Roles,
     birthday: Date,

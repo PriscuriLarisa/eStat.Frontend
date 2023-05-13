@@ -1,3 +1,4 @@
+import { Product } from "./Product";
 import { UserDisplayInfo, UserInfo } from "./User";
 
 export interface UserProduct {
@@ -8,5 +9,6 @@ export interface UserProduct {
     user: UserDisplayInfo,
     imageLink: string,
     price: number,
-    quantity: number
+    quantity: number,
+    product: Product
 }

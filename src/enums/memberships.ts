@@ -3,4 +3,5 @@ export enum Memberships {
     UserFirstTier = 1,
     OwnerSecondTier = 2,
     OwnerFirstTier = 3,
+    NoMembership = 4
 };

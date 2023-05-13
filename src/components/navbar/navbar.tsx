@@ -23,11 +23,27 @@ export const Navbar = (): JSX.Element => {
     
     const onCategoryClicked = (category: string): void => {
         navigate(`${"/manageProducts"}/${category}`);
-    }
+    };
 
     const onSearchClicked = (): void => {
         navigate(`/searchProducts`);
+    };
+
+    const onMyCartClicked = (): void => {
+        navigate('/manageShoppingCart');
     }
+
+    const onMyStockClicked = (): void => {
+        navigate('/myStock');
+    }
+
+    const onMembershipsClicked = (): void => {
+        navigate('/manageMemberships');
+    }
+
+    const onProfileClicked = (): void => {
+        navigate(`/manageProfile`);
+    };
 
     useEffect(() => {
         $('nav').on({
@@ -46,7 +62,7 @@ export const Navbar = (): JSX.Element => {
 
     useEffect(() => {
 
-        setNavLinkGroups(getNavbar(expanded, productCategories, onCategoryClicked, onSearchClicked));
+        setNavLinkGroups(getNavbar(expanded, productCategories, onCategoryClicked, onSearchClicked, onMyCartClicked, onMyStockClicked, onMembershipsClicked, onProfileClicked));
     }, [productCategories, expanded]);
 
     useEffect(() => {

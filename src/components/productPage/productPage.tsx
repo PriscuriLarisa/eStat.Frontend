@@ -1,15 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { addToCartButtonStyles, characteristicsContainerClassname, detailsListStyles, imageClassName, textClassName, labelStyles, mainContainerClassname, productCharacteristicsContainerClassname, productChartsContainerClassname, productDetailsContainerClassname, productInfoContainerClassname, productTitleContainerClassname, titleStyles, orderButtonStyles, infoContainer, infoLabelStyles, secondaryContainer } from "./productPage.styles";
+import { addToCartButtonStyles, characteristicsContainerClassname, detailsListStyles, imageClassName, textClassName, labelStyles, mainContainerClassname, productCharacteristicsContainerClassname, productChartsContainerClassname, productDetailsContainerClassname, productInfoContainerClassname, productTitleContainerClassname, titleStyles, orderButtonStyles, infoContainer, infoLabelStyles, secondaryContainer, calloutTitleClassname, calloutContainerClassname, quantitySpinButtonClassname, calloutBodyContainerClassname, quantitySpinButtonStyles, addToCartCalloutButtonStyles } from "./productPage.styles";
 import { ServiceContext, ServiceContextInstance } from "../../core/serviceContext";
 import { Product } from "../../models/Product";
 import { Memberships } from "../../enums/memberships";
 import { getFormattedJSON } from "../../helpers/stringFormatHelper";
-import { ConstrainMode, DefaultButton, DetailsList, DetailsListLayoutMode, IColumn, IIconProps, IconButton, Label } from "@fluentui/react";
+import { Callout, ConstrainMode, DefaultButton, DetailsList, DetailsListLayoutMode, DirectionalHint, IColumn, IIconProps, IconButton, Label, SpinButton } from "@fluentui/react";
 import { FONT_FAMILY } from "../../library/constants";
 import { UserProduct } from "../../models/UserProduct";
-import { UserDisplayInfo } from "../../models/User";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { AuthentificationContextModel } from "../../authentication/authenticationContext.types";
+import AuthentificationContext from "../../authentication/authenticationContext";
+import { IFetchResult } from "../../hooks/useFetch.types";
+import { useFetch } from "../../hooks/useFetch";
+import { ShoppingCart } from "../../models/ShoppingCart";
+import { ShoppingCartProductAdd } from "../../models/ShoppingCartProduct";
+import { ConfirmationMessageBar } from "../confirmationMessageBar/confirmationMessageBar";
 
 const userMembership: Memberships = Memberships.UserSecondTier;
 const searchIconProps: IIconProps = { iconName: "ShoppingCart" };
@@ -53,14 +59,34 @@ export const ProductPage = (): JSX.Element => {
     const { uid } = useParams();
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [product, setProduct] = useState<Product>();
+    const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
     const [offers, setOffers] = useState<UserProduct[]>();
     const [loading, setLoading] = useState<boolean>(true);
     const [displayOrderButton, setDisplayOrderButton] = useState<boolean>(true);
     const [barChartData, setBarChartData] = useState<any[]>([]);
+    const authenticationContext: AuthentificationContextModel = useContext(AuthentificationContext);
+    const [shoppingCart, setShoppingcart] = useState<ShoppingCart>();
+    const [displayCallout, setDisplayCallout] = useState<boolean>(false);
+    const [pressedCartButton, setPressedCartButton] = useState<string>('');
+    const shoppingCartData: IFetchResult<ShoppingCart> = useFetch<ShoppingCart>(() => services.ShoppingCartService.GetShoppingCartByUser(authenticationContext.User.userGUID!), [authenticationContext.User.userGUID!]);
+    const [displayMessageBar, setDisplayMessageBar] = useState<boolean>(false);
 
     useEffect(() => {
         services.ProductsService.GetByUid(uid!).then(r => { setProduct(r.Data) })
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (shoppingCartData.isLoading) {
+            return;
+        }
+        if (shoppingCartData.errors !== '' ||
+            shoppingCartData.data === null ||
+            shoppingCartData.data?.Error !== undefined ||
+            shoppingCartData.data?.Data === undefined) {
+            return;
+        }
+        setShoppingcart(shoppingCartData.data.Data);
+    }, [shoppingCartData]);
 
     useEffect(() => {
         if (!product?.productGUID)
@@ -82,7 +108,13 @@ export const ProductPage = (): JSX.Element => {
         let chartData: any[] = [];
         offers?.forEach((e) => chartData.push({ name: `${e.user.firstName}` + "\n" + `${e.user.lastName}`, Price: e.price }));
         setBarChartData(chartData);
-    }, [loading])
+    }, [loading]);
+
+    const onAddToCartClicked = (itemId: string) => {
+        setSelectedQuantity(1);
+        setPressedCartButton(itemId);
+        setDisplayCallout(true);
+    };
 
     const onRenderItemColumn = (item: UserProduct, _index?: number, column?: IColumn): React.ReactNode => {
         switch (column!.key) {
@@ -93,10 +125,33 @@ export const ProductPage = (): JSX.Element => {
             case 'quantity':
                 return item.quantity
             case 'addToCart':
-                return <IconButton onClick={() => { console.log("Item added to cart!") }} aria-label="Add to cart" iconProps={searchIconProps} styles={addToCartButtonStyles} />
+                return <IconButton id={`cartButton-${item.userProductGUID}`} onClick={() => { onAddToCartClicked(item.userProductGUID!); }} aria-label="Add to cart" iconProps={searchIconProps} styles={addToCartButtonStyles} />
             default:
                 return "";
         };
+    };
+
+    const onAddItemToCartButtonClicked = () => {
+        const selectedOffer: UserProduct = offers?.find(o => o.userProductGUID === pressedCartButton)!;
+        if (!selectedOffer)
+            return;
+        const cartItemToBeAdded: ShoppingCartProductAdd = {
+            shoppingCartGUID: shoppingCart?.shoppingCartGUID!,
+            userProductGUID: selectedOffer.userProductGUID!,
+            quantity: selectedQuantity
+        };
+        services.ShoppingCartService.AddUserProductToCart(cartItemToBeAdded);
+        setTimeout(() => {
+            setDisplayMessageBar(true);
+        }, 500);
+    };
+
+    const onMessageClosed = (): void => {
+        setDisplayMessageBar(false);
+    }
+
+    const onQuantitySelectedChanged = (event: React.SyntheticEvent<HTMLElement, Event>, newValue?: string | undefined) => {
+        setSelectedQuantity(newValue ? Number(newValue) : 1);
     };
 
     return (
@@ -153,20 +208,53 @@ export const ProductPage = (): JSX.Element => {
                                         }}
                                     >
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" fontSize={10} fontFamily={FONT_FAMILY}/>
-                                        <YAxis fontFamily={FONT_FAMILY} fontSize={15}/>
-                                        <Tooltip contentStyle={{ fontFamily: FONT_FAMILY }}/>
-                                        <Legend fontFamily={FONT_FAMILY}/>
+                                        <XAxis dataKey="name" fontSize={10} fontFamily={FONT_FAMILY} />
+                                        <YAxis fontFamily={FONT_FAMILY} fontSize={15} />
+                                        <Tooltip contentStyle={{ fontFamily: FONT_FAMILY }} />
+                                        <Legend fontFamily={FONT_FAMILY} />
                                         <Bar dataKey="Price" stackId="a" fill="#4B56D2" barSize={30} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
                         }
+
+                        {displayCallout &&
+                            <Callout
+                                role="dialog"
+                                target={`#cartButton-${pressedCartButton}`}
+                                isBeakVisible={true}
+                                //beakWidth={beakWidth}
+                                onDismiss={() => { setDisplayCallout(false) }}
+                                directionalHint={DirectionalHint.rightCenter}
+                                setInitialFocus
+                                gapSpace={35}
+                            >
+                                <div className={calloutContainerClassname}>
+                                    <Label className={calloutTitleClassname}>
+                                        {offers?.find(o => o.userProductGUID === pressedCartButton)!.product!.name}
+                                    </Label>
+                                    <div className={calloutBodyContainerClassname}>
+                                        <SpinButton
+                                            label="Select the quantity"
+                                            defaultValue="1"
+                                            min={1}
+                                            max={offers?.find(o => o.userProductGUID === pressedCartButton)!.quantity}
+                                            step={1}
+                                            className={quantitySpinButtonClassname}
+                                            styles={quantitySpinButtonStyles}
+                                            onChange={onQuantitySelectedChanged}
+                                        />
+
+                                        <DefaultButton text="Add to cart" styles={addToCartCalloutButtonStyles} onClick={onAddItemToCartButtonClicked} />
+
+                                    </div>
+                                </div>
+                            </Callout>
+                        }
                     </div>
                 </>
             }
-
-
+            <ConfirmationMessageBar message="Product successfully added to cart." display={displayMessageBar} onMessageClosed={onMessageClosed}/>
         </div>
     )
 };

@@ -8,8 +8,8 @@ export const mainContainerClassname = mergeStyles({
 });
 
 export const contentContainerClassname = mergeStyles({
-    width: '100%',
-    height: '86%',
+    width: '99%',
+    height: '85%',
     backgroundColor: '#fdfdfd',
     border: '2px solid #f0f0f0',
     borderRadius: '5px',
