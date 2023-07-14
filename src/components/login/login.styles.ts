@@ -53,7 +53,7 @@ export const errorClassName: string = mergeStyles({
     color: 'red',
     fontFamily: FONT_FAMILY,
     position: "relative",
-    left: '22.5%'
+    left: '30%'
 });
 
 export const titleClassName: string = mergeStyles({

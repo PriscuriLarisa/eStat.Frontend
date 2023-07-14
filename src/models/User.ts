@@ -14,8 +14,19 @@ export interface UserInfo {
 export interface UserDisplayInfo {
     userGUID?: string,
     firstName: string,
-    lastName: boolean
-}
+    lastName: string
+};
+
+export interface UserCreate {
+    email?: string,
+    password: string,
+    role: Roles
+};
+
+export interface UserLogin {
+    email: string,
+    password: string
+};
 
 export interface User {
     userGUID?: string,

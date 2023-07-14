@@ -57,6 +57,14 @@ export const errorClassName: string = mergeStyles({
     left: '22.5%'
 });
 
+export const successInfoClassName: string = mergeStyles({
+    color: '#4B56D2',
+    fontFamily: FONT_FAMILY,
+    position: "relative",
+    left: '22.5%',
+    fontWeight: '600'
+});
+
 export const titleClassName: string = mergeStyles({
     color: TEXT_PRIMARY_COLOR,
     fontFamily: FONT_FAMILY,

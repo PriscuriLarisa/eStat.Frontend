@@ -1,5 +1,5 @@
 import BaseService from "../core/baseService";
-import { User, UserDisplayInfo, UserInfo } from "../models/User";
+import { User, UserCreate, UserDisplayInfo, UserInfo } from "../models/User";
 import {Response as IResponse} from "../models/Response" 
 import { APIHelper } from "../helpers/apiHelper";
 
@@ -15,5 +15,10 @@ export default class UserService extends BaseService<User>  {
     async UpdateUserInfo(body: UserInfo): Promise<IResponse<UserInfo>> {
         //return fetch(`https://localhost:7145/api/${this._endpoint}/userInfo`).then(response => { return response.json(); });
         return APIHelper.request(`${this._endpoint}/userInfo`, 'PUT', body);
+    };
+
+    async Register(body: UserCreate): Promise<IResponse<UserCreate>> {
+        //return fetch(`https://localhost:7145/api/${this._endpoint}/userInfo`).then(response => { return response.json(); });
+        return APIHelper.request(`${this._endpoint}`, 'POST', body);
     };
 }

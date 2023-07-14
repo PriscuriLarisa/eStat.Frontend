@@ -13,6 +13,7 @@ export const mainContainerExpandedClassname = mergeStyles({
     border: `2px solid ${BORDER_COLOR}`,
     borderRadius: '4px',
     marginBottom: '0.5%',
+    transition: '0.5s',
     //boxShadow: 'rgba(50, 50, 93, 0.25) 0px 3px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 2px -3px;',
 });
 
@@ -29,6 +30,13 @@ export const titleContainerClassname = mergeStyles({
     //borderRadius: '4px',
     //boxShadow: 'rgba(50, 50, 93, 0.25) 0px 3px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 2px -3px;',
     display: 'flex'
+});
+
+export const headerContainer = mergeStyles({
+    transition: '0.5s',
+    height: '5vh',
+    width: '100%',
+    marginLeft: '2.5%',
 });
 
 export const contentContainerExpandedClassname = mergeStyles({

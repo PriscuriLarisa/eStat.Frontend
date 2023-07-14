@@ -1,4 +1,4 @@
-import { IButtonStyles, mergeStyles } from "office-ui-fabric-react";
+import { IButtonStyles, IDatePickerStyles, mergeStyles } from "office-ui-fabric-react";
 import { BORDER_COLOR, FONT_FAMILY } from "../../library/constants";
 import { ITextFieldStyles } from "@fluentui/react";
 
@@ -11,6 +11,13 @@ export const profileInfoContainer = mergeStyles({
     paddingLeft: '0px',
     //boxShadow: 'rgba(50, 50, 93, 0.25) 0px 3px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 2px -3px;',
 });
+
+export const datePickerStyle: Partial<IDatePickerStyles> = {
+    root: {
+        borderBottom: `2px solid ${BORDER_COLOR}`,
+        backgroundColor: 'transparent'
+    }
+};
 
 export const purchasesContainer = mergeStyles({
     height: '99%',

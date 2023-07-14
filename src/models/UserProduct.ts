@@ -12,3 +12,11 @@ export interface UserProduct {
     quantity: number,
     product: Product
 }
+
+export interface UserProductCreate {
+    userProductGUID?: string,
+    userGUID: string,
+    price: number,
+    quantity: number,
+    productGUID: string
+}

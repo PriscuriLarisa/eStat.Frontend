@@ -1,4 +1,4 @@
-import { IButtonStyles, ISpinButton, ISpinButtonStyles, LabelBase, mergeStyles } from "office-ui-fabric-react";
+import { IButtonStyles, ISpinButton, ISpinButtonStyles, ITextFieldStyles, LabelBase, mergeStyles } from "office-ui-fabric-react";
 import { BORDER_COLOR, FONT_FAMILY } from "../../library/constants";
 import { IDetailsListStyles, ILabelStyles } from "@fluentui/react";
 
@@ -37,8 +37,16 @@ export const productInfoContainerClassname = mergeStyles({
 });
 
 export const productChartsContainerClassname = mergeStyles({
+    marginTop: '15%',
     width: '100%',
-    height: '90%',
+    height: '89%',
+    boxSizing: 'border-box',
+});
+
+export const createOffer = mergeStyles({
+    marginTop: '10%',
+    width: '100%',
+    height: '20%',
     boxSizing: 'border-box',
 });
 
@@ -239,6 +247,54 @@ export const orderButtonStyles: Partial<IButtonStyles> = {
     }
 };
 
+export const spinnerClassname = mergeStyles({
+    marginTop: '20%',
+    fontFamily: FONT_FAMILY
+});
+
+export const chartsButtonStyles: Partial<IButtonStyles> = {
+
+    root: {
+        fontSize: '20px',
+        fontFamily: FONT_FAMILY,
+        border: 'none',
+        transition: '1s',
+        borderRadius: '5px',
+        left: '40%',
+        marginTop: '5%',
+        borderBottom: `2px solid ${BORDER_COLOR}`
+    },
+    rootHovered: {
+        backgroundImage: 'linear-gradient(90deg, rgba(109,67,175,1) 14%, rgba(55,55,180,1) 47%, rgba(128,134,195,1) 100%)',
+        transition: '1s',
+        color: 'white'
+    },
+    rootPressed: {
+        backgroundColor: 'transparent'
+    }
+};
+
+export const addOfferButtonStyle: Partial<IButtonStyles> = {
+
+    root: {
+        fontSize: '20px',
+        fontFamily: FONT_FAMILY,
+        border: 'none',
+        transition: '1s',
+        borderRadius: '5px',
+        left: '40%',
+        borderBottom: `2px solid ${BORDER_COLOR}`
+    },
+    rootHovered: {
+        backgroundImage: 'linear-gradient(90deg, rgba(109,67,175,1) 14%, rgba(55,55,180,1) 47%, rgba(128,134,195,1) 100%)',
+        transition: '1s',
+        color: 'white'
+    },
+    rootPressed: {
+        backgroundColor: 'transparent'
+    }
+};
+
 export const infoContainer: string = mergeStyles({
     width: '100%',
     height: '10%',
@@ -261,9 +317,53 @@ export const calloutBodyContainerClassname: string = mergeStyles({
 });
 
 export const calloutContainerClassname: string  = mergeStyles({
-    minHeight: '200px',
+    minHeight: '150px',
     maxWidth: '350px',
-    textAlign: 'center'
+    width: '350px',
+    textAlign: 'center',
+    marginTop: '7%'
+});
+
+export const quantityDivClassname = mergeStyles({
+    display: 'flex',
+    marginLeft: '10%',
+});
+
+export const priceStyles: Partial<ITextFieldStyles> = {
+    root: {
+        fontFamily: FONT_FAMILY,
+        fontSize: '16px',
+        backgroundColor: 'transparent',
+        marginLeft: '10%',
+        width: '51%',
+        color: "#4B56D2",
+    },
+    wrapper: {
+        backgroundColor: 'transparent',
+    },
+    fieldGroup: {
+        backgroundColor: 'transparent',
+        borderBottom: `1px solid grey`,
+        selectors: {
+            "::after" : {
+                borderBottom: `2px solid black`
+            }
+        }
+    },
+    field: {
+        backgroundColor: 'transparent',
+        fontFamily: FONT_FAMILY,
+        fontSize: '16px',
+        fontWeight: '600',
+        color: "#4B56D2",
+    },
+};
+
+
+export const priceLabel = mergeStyles({
+    fontFamily: FONT_FAMILY,
+    fontSize: '14px',
+    fontWeight: '100'
 });
 
 export const quantitySpinButtonClassname: string  = mergeStyles({

@@ -1,7 +1,7 @@
-import { DefaultButton, IIconProps, Label, Separator, TextField } from "office-ui-fabric-react";
+import { Calendar, DatePicker, DefaultButton, IIconProps, Label, Separator, TextField } from "office-ui-fabric-react";
 import { TitleCard } from "../titleCard/titleCard";
-import { buttonStyles, cellContainer, fieldsContainer, iconClassname, imageClassName, labelClassname, labelRightClassname, labelThinClassname, mainContainer, profileInfoContainer, purchasesContainer, textFieldLargeStyles, textFieldReadonlyStyles, textFieldStyles } from "./manageProfile.styles";
-import { Icon } from "@fluentui/react";
+import { buttonStyles, cellContainer, datePickerStyle, fieldsContainer, iconClassname, imageClassName, labelClassname, labelRightClassname, labelThinClassname, mainContainer, profileInfoContainer, purchasesContainer, textFieldLargeStyles, textFieldReadonlyStyles, textFieldStyles } from "./manageProfile.styles";
+import { Icon, defaultCalendarStrings, defaultDatePickerStrings } from "@fluentui/react";
 import { useContext, useEffect, useState } from "react";
 import { AuthentificationContextModel } from "../../authentication/authenticationContext.types";
 import AuthentificationContext from "../../authentication/authenticationContext";
@@ -29,6 +29,8 @@ export const ManageProfile = (): JSX.Element => {
     const [displaySaveChanges, setDisplaySaveChanges] = useState<boolean>(false);
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [displayMessage, setDisplayMessage] = useState<boolean>(false);
+    const [selectedBirthday, setSelectedBirthday] = useState<Date>(new Date(authenticationContext.User.birthday));
+
     const purchasesData: IFetchResult<Purchase[]> = useFetch<Purchase[]>(() => services.PurchaseService.GetPurchases(authenticationContext.User.userGUID!), [authenticationContext.User.userGUID!]);
     const [purchaseNumbers, setPurchaseNumbers] = useState<any>({});
 
@@ -42,14 +44,14 @@ export const ManageProfile = (): JSX.Element => {
             purchasesData.data?.Data === undefined) {
             return;
         }
-        var sortedArray = purchasesData.data.Data.sort(function(a, b) {
+        var sortedArray = purchasesData.data.Data.sort(function (a, b) {
             var c = Date.parse(a.date.toString());
             var d = Date.parse(b.date.toString());
-            return c-d;
+            return d-c;
         });
         var purchaseNumber = sortedArray.length + 1;
         var purchaseNumbersObject: any = {};
-        sortedArray.forEach(p => { purchaseNumber -= 1; console.log(p); purchaseNumbersObject[p.purchaseGUID!] = purchaseNumber});
+        sortedArray.forEach(p => { purchaseNumber -= 1; purchaseNumbersObject[p.purchaseGUID!] = purchaseNumber });
         setPurchases(sortedArray);
         setPurchaseNumbers(purchaseNumbersObject);
     }, [purchasesData]);
@@ -70,15 +72,22 @@ export const ManageProfile = (): JSX.Element => {
     };
 
     const onSaveChangesClicked = () => {
+        selectedBirthday.setDate(selectedBirthday.getDate() + 1)
         const newUser: UserInfo = Object.assign({}, authenticationContext.User);
         newUser.firstName = firstName;
         newUser.lastName = lastName;
         newUser.email = email;
+        newUser.birthday = selectedBirthday;
+        newUser.role = authenticationContext.User.role;
+        newUser.membership = authenticationContext.User.membership;
+        newUser.userGUID = authenticationContext.User.userGUID;
         services.UserService.UpdateUserInfo(newUser);
         setTimeout(() => {
             authenticationContext.SetUpdatedUser(newUser);
             setDisplayMessage(true);
         }, 1000);
+
+        setDisplaySaveChanges(false);
     };
 
     const getProductInfo = (product: any): JSX.Element => {
@@ -114,18 +123,23 @@ export const ManageProfile = (): JSX.Element => {
         const productInfo: JSX.Element[] = p.products.map((pro: PurchaseProduct) => getProductInfo(pro));
         const content: JSX.Element = <>
             {productInfo}
-            <div style={{ color: '#4B56D2', fontFamily: FONT_FAMILY, fontSize: '20px', position: 'relative', textAlign: 'center'}}>
-                <h3 style={{marginTop: '2%', position: 'relative'}}>{`Total price: ${computeTotalPrice(p).toString()}$`}</h3>
+            <div style={{ color: '#4B56D2', fontFamily: FONT_FAMILY, fontSize: '20px', position: 'relative', textAlign: 'center' }}>
+                <h3 style={{ marginTop: '2%', position: 'relative' }}>{`Total price: ${computeTotalPrice(p).toString()}$`}</h3>
             </div>
         </>
         return <>
-            <ExpandableCard title={`Purchase #${purchaseNumbers[p.purchaseGUID!]}: ${new Date(p.date).toDateString()} ${new Date(p.date).getHours()}:${new Date(p.date).getMinutes()}`} content={content} />
+            <ExpandableCard subTitle={`Address: ${p.address}`} title={`Purchase #${purchaseNumbers[p.purchaseGUID!]}: ${new Date(p.date).toDateString()} ${new Date(p.date).getHours()}:${new Date(p.date).getMinutes()}`} content={content} />
         </>
 
     });
 
     const onMessageClosed = (): void => {
         setDisplayMessage(false);
+    };
+
+    const onSelectBirthday = (date: Date | null | undefined): void => {
+        setSelectedBirthday(new Date(date!));
+        setDisplaySaveChanges(true);
     };
 
     return (
@@ -151,7 +165,17 @@ export const ManageProfile = (): JSX.Element => {
                         <div></div>
                         <div className={cellContainer}>
                             <Label className={labelClassname}>Birthday</Label>
-                            <TextField value={new Date(authenticationContext.User.birthday).toLocaleDateString().trim()} styles={textFieldReadonlyStyles} readOnly />
+                            {/* <TextField value={new Date(authenticationContext.User.birthday).toLocaleDateString().trim()} styles={textFieldReadonlyStyles} readOnly /> */}
+                            <DatePicker
+                                firstDayOfWeek={1}
+                                placeholder="Select a date..."
+                                ariaLabel="Select a date"
+                                value={selectedBirthday}
+                                // DatePicker uses English strings by default. For localized apps, you must override this prop.
+                                onSelectDate={onSelectBirthday}
+                                borderless
+                                styles={datePickerStyle}
+                            />
                         </div>
                         <div className={cellContainer}>
                             <Label className={labelClassname}>Membership</Label>
@@ -164,12 +188,12 @@ export const ManageProfile = (): JSX.Element => {
                 </div>
 
                 <div className={purchasesContainer}>
-                    <TitleCardMedium title="Purchases"/>
-                    <Separator/>
+                    <TitleCardMedium title="Purchase history" />
+                    <Separator />
                     <>{purchasesList}</>
                 </div>
             </div>
-            <ConfirmationMessageBar message={"Profile information has been updated successfully."} display={displayMessage} onMessageClosed={onMessageClosed}/>
+            <ConfirmationMessageBar message={"Profile information has been updated successfully."} display={displayMessage} onMessageClosed={onMessageClosed} />
         </>
     );
 };

@@ -3,14 +3,16 @@ import { ServiceContext, ServiceContextInstance } from "../../core/serviceContex
 import { useFetch } from "../../hooks/useFetch";
 import { IFetchResult } from "../../hooks/useFetch.types";
 import { ShoppingCart } from "../../models/ShoppingCart";
-import { mainContainerClassname, orderButtonStyles, priceContainerClassname, priceLabel, productsContainerClassname, productsDivContainerClassname } from "./manageShoppingCart.styles";
+import { cellContainer, labelClassname, mainContainerClassname, orderButtonStyles, priceContainerClassname, priceLabel, productsContainerClassname, productsDivContainerClassname, textFieldLargeStyles } from "./manageShoppingCart.styles";
 import { AuthentificationContextModel } from "../../authentication/authenticationContext.types";
 import AuthentificationContext from "../../authentication/authenticationContext";
 import { ShoppingCartProductCard } from "./shoppingCartProductCard/shoppingCartProductCard";
 import { TitleCard } from "../titleCard/titleCard";
-import { DefaultButton, Label } from "office-ui-fabric-react";
+import { DefaultButton, Label, TextField } from "office-ui-fabric-react";
 import { TitleCardSmall } from "../titleCard/titleCardSmall";
 import { ConfirmationMessageBar } from "../confirmationMessageBar/confirmationMessageBar";
+import { TitleCardMedium } from "../titleCard/titleCardMedium";
+import { BORDER_COLOR } from "../../library/constants";
 
 export const ManageShoppingCart = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -20,6 +22,8 @@ export const ManageShoppingCart = (): JSX.Element => {
     const shoppingCartData: IFetchResult<ShoppingCart> = useFetch<ShoppingCart>(() => services.ShoppingCartService.GetShoppingCartByUser(authenticationContext.User.userGUID!), [authenticationContext.User.userGUID!]);
     const [displayMessageBar, setDisplayMessageBar] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
+    const [address, setAddress] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     useEffect(() => {
         if (shoppingCartData.isLoading) {
@@ -61,7 +65,11 @@ export const ManageShoppingCart = (): JSX.Element => {
     };
 
     const onPurchaseItemsClicked = (): void => {
-        services.PurchaseService.PurchaseItems(shoppingCart?.shoppingCartGUID!);
+        if(address === '') {
+            setErrorMessage("Addres cannot be left empty.")
+            return;
+        }
+        services.PurchaseService.PurchaseItemsWithAddress(shoppingCart?.shoppingCartGUID!, address);
         setMessage("Items successfully purchased.");
         setTimeout(() => {
             let newShoppingCart = Object.assign({}, shoppingCart!);
@@ -73,7 +81,16 @@ export const ManageShoppingCart = (): JSX.Element => {
 
     const onMessageClosed = (): void => {
         setDisplayMessageBar(false);
-    }
+    };
+
+    const onAddressChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string | undefined): void => {
+        setAddress(newValue!);
+        if (newValue === '') {
+            setErrorMessage("Addres cannot be left empty.")
+            return;
+        }
+        setErrorMessage("");
+    };
 
     return (
         <>
@@ -93,12 +110,19 @@ export const ManageShoppingCart = (): JSX.Element => {
                                 <>
                                     <TitleCard title="Total price" />
                                     <Label className={priceLabel}>{computeTotalPrice().toString()}$</Label>
-                                    <DefaultButton text="Purchase items »" styles={orderButtonStyles} onClick={onPurchaseItemsClicked}/>
+                                    <div style={{borderBottom: `2px solid ${BORDER_COLOR}`, marginRight: '5%'}}>
+                                        <TitleCardMedium title="Order details" />
+                                        <div className={cellContainer}>
+                                            <Label className={labelClassname}>Address</Label>
+                                            <TextField multiline rows={2} value={address} styles={textFieldLargeStyles} onChange={onAddressChange} errorMessage={errorMessage} />
+                                        </div>
+                                    </div>
+                                    <DefaultButton text="Purchase items »" styles={orderButtonStyles} onClick={onPurchaseItemsClicked} />
                                 </>
                             </div>
                         }
                     </>}
-                <ConfirmationMessageBar message={message} display={displayMessageBar} onMessageClosed={onMessageClosed}/>
+                <ConfirmationMessageBar message={message} display={displayMessageBar} onMessageClosed={onMessageClosed} />
             </div>
         </>
     );

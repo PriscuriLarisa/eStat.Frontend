@@ -1,5 +1,7 @@
 import { IIconProps, INavLink, INavLinkGroup } from "@fluentui/react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { AuthentificationContextModel } from "../../authentication/authenticationContext.types";
+import { Roles } from "../../enums/roles";
 
 const dashboardIconProps: IIconProps = { iconName: "Chart" };
 const categoriesIconProps: IIconProps = { iconName: "GridViewMedium" };
@@ -12,23 +14,28 @@ const cartIconProps: IIconProps = { iconName: "ShoppingCart" };
 const stockIconProps: IIconProps = { iconName: "Package" };
 const logoutIconProps: IIconProps = { iconName: "SignOut" };
 
-const processCategories = (categories: string[], onClick:(category: string) => void): INavLink[] | undefined => {
-  
-  return categories.map((c) => { return {
-    name: c,
-    url: '',
-    onClick: (() => {onClick(c)}),
-    key: c}
+const processCategories = (categories: string[], onClick: (category: string) => void): INavLink[] | undefined => {
+
+  return categories.map((c) => {
+    return {
+      name: c,
+      url: '',
+      onClick: (() => { onClick(c) }),
+      key: c
+    }
   });
 }
 
-export const getNavbar = (expanded: boolean, categories: string[],  onCategoryClicked: (category: string) => void, 
-                                                                    onSearchClicked: () => void, 
-                                                                    onMyCartClicked: () => void,
-                                                                    onMyStockClicked: () => void,
-                                                                    onMembershipsClicked: () => void,
-                                                                    onProfileClicked: () => void): INavLinkGroup[] => {
-  return [
+export const getNavbar = (expanded: boolean, categories: string[], onCategoryClicked: (category: string) => void,
+  onSearchClicked: () => void,
+  onMyCartClicked: () => void,
+  onMyStockClicked: () => void,
+  onMembershipsClicked: () => void,
+  onProfileClicked: () => void,
+  onLogoutClicked: () => void,
+  onNotificationClicked: () => void,
+  authenticationContent: AuthentificationContextModel): INavLinkGroup[] => {
+  const retailerSidebar: INavLinkGroup[] = [
     {
       name: 'Shop',
       links: [
@@ -44,39 +51,18 @@ export const getNavbar = (expanded: boolean, categories: string[],  onCategoryCl
           name: 'Search',
           url: '',
           isExpanded: false,
-          onClick: (() => {onSearchClicked()}),
+          onClick: (() => { onSearchClicked() }),
           iconProps: searchIconProps,
-        },
-        {
-          name: 'My Cart',
-          isExpanded: false,
-          onClick: (() => {onMyCartClicked()}),
-          iconProps: cartIconProps,
-          url: ''
         },
       ]
     },
     {
-      name: 'Dashboards',
+      name: 'Retail',
       links: [
-        {
-          name: 'Charts',
-          isExpanded: false,
-          onClick: (() => { }),
-          iconProps: dashboardIconProps,
-          url: ''
-        },
-        {
-          name: 'Ideas',
-          isExpanded: false,
-          onClick: (() => { }),
-          iconProps: recommendationsIconProps,
-          url: ''
-        },
         {
           name: 'My Stock',
           isExpanded: false,
-          onClick: (() => {onMyStockClicked()}),
+          onClick: (() => { onMyStockClicked() }),
           iconProps: stockIconProps,
           url: ''
         },
@@ -88,32 +74,97 @@ export const getNavbar = (expanded: boolean, categories: string[],  onCategoryCl
         {
           name: 'Profile',
           isExpanded: false,
-          onClick: (() => {onProfileClicked()}),
+          onClick: (() => { onProfileClicked() }),
           iconProps: profileIconProps,
           url: ''
         },
         {
           name: 'Memberships',
           isExpanded: false,
-          onClick: (() => {onMembershipsClicked()}),
+          onClick: (() => { onMembershipsClicked() }),
           iconProps: medalIconProps,
           url: ''
         },
         {
           name: 'Notifications',
           isExpanded: false,
-          onClick: (() => { }),
+          onClick: (() => { onNotificationClicked() }),
           iconProps: notifIconProps,
           url: ''
         },
         {
           name: 'Logout',
           isExpanded: false,
-          onClick: (() => { }),
+          onClick: (() => { onLogoutClicked() }),
           iconProps: logoutIconProps,
           url: ''
         },
       ]
     }
-  ]
+  ];
+
+  const customerSidebar: INavLinkGroup[] = [
+    {
+      name: 'Shop',
+      links: [
+        {
+          name: 'Categories',
+          url: '',
+          isExpanded: expanded,
+          onClick: (() => { }),
+          iconProps: categoriesIconProps,
+          links: processCategories(categories, onCategoryClicked)
+        },
+        {
+          name: 'Search',
+          url: '',
+          isExpanded: false,
+          onClick: (() => { onSearchClicked() }),
+          iconProps: searchIconProps,
+        },
+        {
+          name: 'My Cart',
+          isExpanded: false,
+          onClick: (() => { onMyCartClicked() }),
+          iconProps: cartIconProps,
+          url: ''
+        },
+      ]
+    },
+    {
+      name: 'Personal',
+      links: [
+        {
+          name: 'Profile',
+          isExpanded: false,
+          onClick: (() => { onProfileClicked() }),
+          iconProps: profileIconProps,
+          url: ''
+        },
+        {
+          name: 'Memberships',
+          isExpanded: false,
+          onClick: (() => { onMembershipsClicked() }),
+          iconProps: medalIconProps,
+          url: ''
+        },
+        {
+          name: 'Notifications',
+          isExpanded: false,
+          onClick: (() => { onNotificationClicked() }),
+          iconProps: notifIconProps,
+          url: ''
+        },
+        {
+          name: 'Logout',
+          isExpanded: false,
+          onClick: (() => { onLogoutClicked() }),
+          iconProps: logoutIconProps,
+          url: ''
+        },
+      ]
+    }
+  ];
+
+  return authenticationContent.User.role === Roles.Retailer ? retailerSidebar : customerSidebar;
 }

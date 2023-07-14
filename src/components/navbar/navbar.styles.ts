@@ -1,4 +1,4 @@
-import { INavStyles, mergeStyles } from "@fluentui/react";
+import { INavStyles, IPanelStyles, mergeStyles } from "@fluentui/react";
 import { BORDER_COLOR, FONT_FAMILY } from "../../library/constants";
 
 export const navStyles: Partial<INavStyles> = {
@@ -83,6 +83,27 @@ export const logoImageClassName: string = mergeStyles({
     left: '0.25vw',
     position: 'absolute',
     opacity: 0.8,
-    zIndex: -8
+    zIndex: -8,
 });
 
+
+export const panelStyles: Partial<IPanelStyles> = {
+    headerText: {
+        fontFamily: FONT_FAMILY,
+    },
+    scrollableContent: {
+        '::-webkit-scrollbar': {
+            width: '6px',
+        },
+        '::-webkit-scrollbar-track': {
+            background: 'transparent'
+        },
+        '::-webkit-scrollbar-thumb': {
+            backgroundColor: `${BORDER_COLOR}`,
+            borderRadius: '5px',
+        },
+        '.ms-DetailsRow-cell': {
+            fontFamily: FONT_FAMILY,
+        },
+    }
+};

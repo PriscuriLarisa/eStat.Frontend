@@ -1,6 +1,6 @@
 import { mergeStyles } from "@fluentui/react";
 import { BORDER_COLOR, FONT_FAMILY } from "./library/constants";
-import { ISpinnerStyles } from "office-ui-fabric-react";
+import { IPanelStyles, ISpinnerStyles } from "office-ui-fabric-react";
 
 export const mainContainerClassname = mergeStyles({
     width: '95.5vw',
@@ -23,4 +23,4 @@ export const spinnerStyles: Partial<ISpinnerStyles> = {
         fontFamily: FONT_FAMILY
     },
     
-}
+};

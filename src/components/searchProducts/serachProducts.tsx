@@ -11,13 +11,13 @@ import { IFetchResult } from "../../hooks/useFetch.types";
 import { useFetch } from "../../hooks/useFetch";
 import { PRODUCTS_PER_PAGE } from "../../library/constants";
 import { useParams } from "react-router-dom";
+const searchIconProps: IIconProps = { iconName: "Search" };
 
 export const SearchProducts = (): JSX.Element => {
     const url = new URL(window.location.href);
     const urlKeywords: string | null = url.searchParams.get("keywords");
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [products, setProducts] = useState<Product[]>([]);
-    const searchIconProps: IIconProps = { iconName: "Search" };
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [keyWords, setKeyWords] = useState<string>("");
     const [searchBarText, setSearchBarText] = useState<string>("");
@@ -27,10 +27,9 @@ export const SearchProducts = (): JSX.Element => {
     const productsData: IFetchResult<Product[]> = useFetch<Product[]>(() => services.ProductsService.GetSearchedProductsByPage(currentPage, SortingCriterias.AlphabeticAscending, keyWords), [keyWords, currentPage.toString(), urlKeywords!]);
     const numberOfproductsData: IFetchResult<number> = useFetch<number>(() => services.ProductsService.GetNumberOfProductsBySearch(keyWords), [keyWords, urlKeywords!]);
 
-
     const onSearchBarChange = (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText?: string | undefined): void => {
         setSearchBarText(newText ?? "");
-    }
+    };
 
     useEffect(() => {
         if(urlKeywords)
@@ -48,6 +47,7 @@ export const SearchProducts = (): JSX.Element => {
             return;
         }
         setProducts(productsData.data.Data);
+        console.log(productsData.data.Data);
         setAreProductsLoaded(true);
     }, [productsData]);
 
@@ -61,7 +61,7 @@ export const SearchProducts = (): JSX.Element => {
             numberOfproductsData.data?.Data === undefined) {
             return;
         }
-        setNumberOfPages(Math.ceil(numberOfproductsData.data.Data / PRODUCTS_PER_PAGE - 1));
+        setNumberOfPages(Math.ceil(numberOfproductsData.data.Data / PRODUCTS_PER_PAGE));
         setNumberOfPagesLoaded(true);
     }, [numberOfproductsData]);
 
@@ -78,7 +78,7 @@ export const SearchProducts = (): JSX.Element => {
 
     const updateCurrentPage = (pageNumber: number): void => {
         setCurrentPage(pageNumber);
-    }
+    };
 
     const productsInPage: JSX.Element[] = products.map(product => {
         return (

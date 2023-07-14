@@ -7,4 +7,5 @@ export interface Purchase {
     user: UserDisplayInfo,
     date: Date,
     products: PurchaseProduct[],
+    address: string
 };

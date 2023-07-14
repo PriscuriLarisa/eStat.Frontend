@@ -4,7 +4,7 @@ import { IButtonGridStyleProps } from "@fluentui/react";
 
 export const mainContainerClassname = mergeStyles({
     width: '90%',
-    height: '30%',
+    height: '33%',
     backgroundColor: '#fdfdfd',
     // backgroundColor:'red',
     boxSizing: 'border-box',

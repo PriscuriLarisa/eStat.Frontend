@@ -11,3 +11,7 @@ export const LOGIN_BUTTON_TEXT: string = "Login";
 export const BORDER_COLOR: string = "#e3e3e3";
 export const PRODUCTS_PER_PAGE: number = 8;
 export const PRODUCT_PAGE_PATH: string = '/productPage';
+export const ACCESS_TOKEN = 'jwt';
+export const COLORS = ['#82C3EC', '#4B56D2', '#F46197', '#FFA69E', '#472183', '#FFA69E'];
+export const RADIAN = Math.PI / 180;
+export const GUID_EMPTY = '00000000-0000-0000-0000-000000000000';

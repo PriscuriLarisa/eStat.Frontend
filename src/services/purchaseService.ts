@@ -9,6 +9,10 @@ export default class PurchaseService extends BaseService<Purchase>  {
         return APIHelper.request(`${this._endpoint}/addPurchase/${shoppingCartGuid}`, 'POST');
     };
 
+    async PurchaseItemsWithAddress(shoppingCartGuid: string, address: string): Promise<IResponse<Purchase>> {
+        return APIHelper.request(`${this._endpoint}/addPurchase/${shoppingCartGuid}/${address}`, 'POST');
+    };
+
     async GetPurchases(userUid: string): Promise<IResponse<Purchase[]>> {
         return APIHelper.request(`${this._endpoint}/user/${userUid}`, 'GET');
     }

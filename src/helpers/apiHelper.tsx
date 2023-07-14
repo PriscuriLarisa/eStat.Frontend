@@ -1,24 +1,27 @@
 import {Response as IResponse} from "../models/Response" 
 import ResponseBody, { Methods } from "../models/ResponseBody";
 import BASE_URL from '../config.json'
+import Cookies from "universal-cookie";
+import { ACCESS_TOKEN } from "../library/constants";
 
 class ApiHelper {
 
     request = async<T,>(endpoint: string, method: Methods, body?: T): Promise<IResponse<T>> => {
         try {
-            //const cookie = new Cookies();
+            const cookie = new Cookies();
             const responseBody: ResponseBody = {
                 method: method,
+                credentials: 'include',
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-                }
+                },
             }
 
-            // if (cookie.get(ACCESS_TOKEN) !== undefined) {
-            //     responseBody.headers = { ...responseBody.headers, 'Access-Token': cookie.get(ACCESS_TOKEN) }
-            // }
+            if (cookie.get(ACCESS_TOKEN) !== undefined) {
+                responseBody.headers = { ...responseBody.headers, 'Access-Token': cookie.get(ACCESS_TOKEN) }
+            }
 
             if (method !== 'GET' || 'DELETE') {
                 responseBody.body = JSON.stringify(body);

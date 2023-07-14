@@ -5,7 +5,8 @@ export const mainContainerClassname = mergeStyles({
     width: '100%',
     height: 'auto',
     backgroundColor: 'transparent',
-    position: 'relative'
+    position: 'relative',
+    transition: '0.5s'
 });
 
 export const titleClassname = mergeStyles({
@@ -17,6 +18,21 @@ export const titleSmallClassname = mergeStyles({
     color: "#53525c",
     fontFamily: FONT_FAMILY,
     fontSize: '18px'
+});
+
+export const titleCenterClassname = mergeStyles({
+    color: "#53525c",
+    fontFamily: FONT_FAMILY,
+    fontSize: '24px',
+    textAlign: 'center'
+});
+
+export const titleCenterMainClassname = mergeStyles({
+    color: "#53525c",
+    fontFamily: FONT_FAMILY,
+    fontSize: '18px',
+    textAlign: 'center',
+    marginLeft: '10%'
 });
 
 export const titleMediumClassname = mergeStyles({

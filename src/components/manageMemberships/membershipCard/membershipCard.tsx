@@ -31,9 +31,6 @@ export const MembershipCard = (props: IMembershipCardProps): JSX.Element => {
             },
         });
         setRegisteredEvent(true);
-        console.log(authenticationContext.User)
-        console.log(props.membershipInfo.membership)
-        console.log(props.membershipInfo.title)
     }, []);
 
     const onSelectMembershipClicked = () => {

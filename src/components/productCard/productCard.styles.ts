@@ -106,10 +106,10 @@ export const buttonStyles: Partial<IButtonStyles> = {
     rootPressed: {
         backgroundColor: 'transparent'
     },
-}
+};
 
 export const panelStyles: Partial<IPanelStyles> = {
     headerText: {
         fontFamily: FONT_FAMILY,
     }
-}
+};

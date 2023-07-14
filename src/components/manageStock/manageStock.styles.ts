@@ -1,4 +1,4 @@
-import { IButtonStyles, mergeStyles } from "office-ui-fabric-react";
+import { IButtonStyles, ITextFieldStyles, mergeStyles } from "office-ui-fabric-react";
 import { BORDER_COLOR, FONT_FAMILY } from "../../library/constants";
 
 export const mainContainerClassname = mergeStyles({
@@ -13,9 +13,33 @@ export const mainContainerClassname = mergeStyles({
     //overflowX: 'hidden'
 });
 
+export const textFieldStyles: Partial<ITextFieldStyles> = {
+    root: {
+        width: '30%',
+        textAlign: 'center',
+        backgroundColor: '#fdfdfd',
+        boxSizing: 'border-box',
+        padding: '2px',
+        borderBottom: '2px solid #4B56D2',
+        fontFamily: FONT_FAMILY,
+        margin: 'auto',
+        marginBottom: '2%'
+    },
+    icon: {
+        color: '#4B56D2',
+        fontWeight: '900',
+        fontSize: '20px'
+    },
+    field: {
+        fontFamily: FONT_FAMILY,
+        fontSize: '17px',
+        color: '#472183'
+    },
+};
+
 export const productsContainerClassname = mergeStyles({
     width: '98%',
-    height: '90%',
+    height: '79%',
     //backgroundColor: '#fdfdfd',
     boxSizing: 'border-box',
     //backgroundColor: 'red',

@@ -1,16 +1,21 @@
 import { IIconProps, IconButton, Label, Panel } from "@fluentui/react"
 import { buttonContainerClassname, buttonStyles, imageClassName, mainContainerClassname, productContainerClassname, nameClassname, priceContainerClassname, nameContainerClassName, labelStyles, panelStyles } from "./productCard.styles"
 import { IProductCardProps } from "./productCard.types"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PanelType } from "office-ui-fabric-react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { PRODUCT_PAGE_PATH } from "../../library/constants";
 import { getFormattedJSON } from "../../helpers/stringFormatHelper";
-import { ConfirmationMessageBar } from "../confirmationMessageBar/confirmationMessageBar";
+import { ServiceContext, ServiceContextInstance } from "../../core/serviceContext";
+import { AuthentificationContextModel } from "../../authentication/authenticationContext.types";
+import AuthentificationContext from "../../authentication/authenticationContext";
 
 const infoIconProps: IIconProps = { iconName: "Info" };
 
 export const ProductCard = (props: IProductCardProps): JSX.Element => {
+    const services = useContext<ServiceContext>(ServiceContextInstance);
+    const authenticationContext: AuthentificationContextModel = useContext(AuthentificationContext);
+
     const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
     const [characteristics, setCharacteristics] = useState<object | undefined>();
     const [characteristicsAsString, setCharacteristicsAsString] = useState<string>("");
@@ -18,10 +23,11 @@ export const ProductCard = (props: IProductCardProps): JSX.Element => {
 
     const onInfoButtonClick = (): void => {
         setIsPanelOpen(true);
-    }
+    };
+
     const dismissPanel = (): void => {
         setIsPanelOpen(false);
-    }
+    };
 
     useEffect(() => {
         setFormattedCharacteristics();
@@ -30,7 +36,7 @@ export const ProductCard = (props: IProductCardProps): JSX.Element => {
     useEffect(() => {
         var s: string | undefined = "";
         s = formatJSONAsString(characteristics, s, 0);        
-    }, [characteristics])
+    }, [characteristics]);
 
     const setFormattedCharacteristics = (): void => {
         setCharacteristics(getFormattedJSON(props.product.characteristics));
@@ -58,7 +64,14 @@ export const ProductCard = (props: IProductCardProps): JSX.Element => {
     };
 
     const onLabelClick = (): void => {
-        navigate(`${PRODUCT_PAGE_PATH}/${props.product.productGUID}`, );
+        services.SearchService.Add({productGuid: props.product.productGUID!, userGuid: authenticationContext.User.userGUID});
+        navigate(`${PRODUCT_PAGE_PATH}/${props.product.productGUID}`);
+    };
+
+    const getCharacteristics = (): string => {
+        if(JSON.stringify(characteristics, null, 4) === undefined)
+            return "";
+        return JSON.stringify(characteristics, null, 4).replaceAll('{', "").replaceAll('}', "").replaceAll('"', '').replaceAll('\\', '').replaceAll(',', '');
     }
 
     return (
@@ -84,7 +97,7 @@ export const ProductCard = (props: IProductCardProps): JSX.Element => {
                 customWidth="650px"
             >
                 <div>
-                    <Label className={nameClassname}><pre>{JSON.stringify(characteristics, null, 4)}</pre></Label>
+                    <Label className={nameClassname}><pre>{getCharacteristics()}</pre></Label>
                 </div>
             </Panel>
         </div>

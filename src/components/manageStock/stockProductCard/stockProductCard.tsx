@@ -5,6 +5,7 @@ import { IconButton } from "@fluentui/react"
 import { ServiceContext, ServiceContextInstance } from "../../../core/serviceContext"
 import { IStockProductCardProps } from "./stockProductCard.types"
 import { pictureContainer, imageClassName, infoContainer, titleContainer, buttonStyles, quantityLabel, priceLabel, mainContainerClassname, quantityDivClassname, plusMinusButtonStyles, priceClassName, priceStyles } from "./stockProductCard.styles"
+import { PriceChangeCreate } from "../../../models/PriceChange"
 
 const deleteIconProps: IIconProps = { iconName: "Delete" };
 const minusIconProps: IIconProps = { iconName: "Remove" };
@@ -13,8 +14,15 @@ const plusIconProps: IIconProps = { iconName: "Add" };
 export const StockProductCard = (props: IStockProductCardProps): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [quantity, setQuantity] = useState<number>(props.product.quantity);
+    const [oldPrice, setOldPrice] = useState<number>(props.product.price);
     const [price, setPrice] = useState<number>(props.product.price);
     const [displaySaveChanges, setDisplaySaveChanges] = useState<boolean>(false);
+
+    useEffect(() => {
+        setPrice(props.product.price);
+        setOldPrice(props.product.price);
+        setQuantity(props.product.quantity);
+    }, [props.product]);
 
     const onPlusButtonClicked = (): void => {
         setDisplaySaveChanges(true);
@@ -32,11 +40,21 @@ export const StockProductCard = (props: IStockProductCardProps): JSX.Element => 
     };
 
     const onSaveButtonClicked = (): void => {
-        //services.ShoppingCartProductsService.Delete(props.product.shoppingCartProductGUID!);
-        //props.onDeleteButtonClicked(props.product.shoppingCartProductGUID!);
         props.product.quantity = quantity;
         props.product.price = price;
         services.UserProductService.Update(props.product);
+        if(price !== oldPrice) {
+            var priceChange: PriceChangeCreate = {
+                userProductGUID: props.product.userProductGUID!,
+                productGUID: props.product.product.productGUID!,
+                fromPrice: oldPrice,
+                toPrice: price
+            };
+    
+            setOldPrice(price);
+            services.PriceChangeService.CreatePriceChange(priceChange);
+        }
+        setDisplaySaveChanges(false);
     };
 
     return (<>
@@ -62,7 +80,7 @@ export const StockProductCard = (props: IStockProductCardProps): JSX.Element => 
                 </div>
                 <div className={quantityDivClassname}>
                     <Label className={priceLabel}>Price per item:</Label>
-                    <TextField defaultValue={`${Number(props.product.price!).toFixed(2)}`} borderless styles={priceStyles} onChange={onPriceChange}/>
+                    <TextField defaultValue={`${Number(props.product.price!).toFixed(2)}`} value={price.toString()} borderless styles={priceStyles} onChange={onPriceChange}/>
                 </div>
             </div>
         </div>
